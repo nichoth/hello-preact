@@ -1,11 +1,4 @@
 {
-  "name": "@nichoth/mars-roving",
-  "description": "https://hiring.hypercore-protocol.org/",
-  "version": "0.0.0",
-  "main": "wrapper.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "start": "npm run build-sass && npm run build && concurrently --kill-others \"npm run serve\" \"npm run watch-sass\"",
     "serve": "budo src/index.js:bundle.js --dir=public/ --live --pushstate --open -- -p esmify -p common-shakeify -dv",
@@ -26,8 +19,7 @@
     "htm": "^3.0.4",
     "observ": "^0.2.0",
     "observ-struct": "^6.0.0",
-    "preact": "^10.5.13",
-    "pull-stream": "^3.6.14"
+    "preact": "^10.5.13"
   },
   "devDependencies": {
     "browserify": "^16.5.2",
@@ -42,15 +34,6 @@
     "tape": "^5.2.2",
     "uglifyify": "^5.0.2",
     "unassertify": "^2.1.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nichoth/mars-roving.git"
-  },
-  "author": "Nick Thomas <nichoth@gmail.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nichoth/mars-roving/issues"
-  },
-  "homepage": "https://github.com/nichoth/mars-roving#readme"
+  }
 }
+
