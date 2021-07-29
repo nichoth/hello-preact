@@ -1,0 +1,59 @@
+{
+  "name": "@nichoth/mars-roving",
+  "description": "https://hiring.hypercore-protocol.org/",
+  "version": "0.0.0",
+  "main": "wrapper.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "npm run build && concurrently --kill-others \"npm run serve\" \"npm run watch-sass\"",
+    "serve": "budo src/index.js:bundle.js --dir=public/ --live --pushstate --open -- -p esmify -p common-shakeify -dv",
+    "build": "npm run build-js && npm run build-sass",
+    "build-sass": "sass src/style/main.scss public/style.css",
+    "watch-sass": "sass --watch src/style/main.scss public/style.css",
+    "build-js": "browserify -p esmify -p common-shakeify -t unassertify -t uglifyify --debug src/index.js > public/bundle.js",
+    "watch-js": "watchify -t uglifyify --debug -p esmify src/index.js -o public/bundle.js",
+    "test-browser": "npm run build && concurrently --kill-others \"budo src/index.js:bundle.js --dir=public/ --port=9966 --live --pushstate -- -p esmify -dv\" \"cypress open\"",
+    "test": "tape test/*.js | tap-spec",
+    "lint": "eslint .",
+    "deps": "depcheck --skip-missing=true --ignores=\"cypress,esmify,uglifyify,depcheck,eslint,eslint-config-minlint,public/*\"",
+    "preversion": "npm run lint && npm run deps",
+    "postversion": "git push && git push --tags && npm publish"
+  },
+  "dependencies": {
+    "htm": "^3.0.4",
+    "isomorphic-fetch": "^3.0.0",
+    "preact": "^10.5.13",
+    "pull-pushable": "^2.2.0",
+    "query-string": "^4.3.4",
+    "route-event": "^3.1.0",
+    "ruta3": "^2.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.2",
+    "budo": "^11.6.4",
+    "common-shakeify": "^0.6.2",
+    "concurrently": "^6.2.0",
+    "cypress": "^7.4.0",
+    "depcheck": "^1.4.1",
+    "eslint-config-minlint": "^2.0.0",
+    "esmify": "^2.1.1",
+    "pull-stream": "^3.6.14",
+    "sass": "^1.34.0",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.2.2",
+    "uglifyify": "^5.0.2",
+    "unassertify": "^2.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nichoth/mars-roving.git"
+  },
+  "author": "Nick Thomas <nichoth@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nichoth/mars-roving/issues"
+  },
+  "homepage": "https://github.com/nichoth/mars-roving#readme"
+}

@@ -1,0 +1,6 @@
+{
+    "extends": ["minlint"],
+    "parserOptions": {
+        "sourceType": "module",
+    }
+}
