@@ -1,49 +1,50 @@
-var route = require('route-event')()
 import { render } from 'preact'
+import { useState } from 'preact/hooks';
 import { html } from 'htm/preact'
-var router = require('ruta3')()
-var IndexView = require('./view/index')
-var SpecificImageView = require('./view/specific-image-view')
-var qs = require('query-string')
+var struct = require('observ-struct')
+var observ = require('observ')
+var Bus = require('@nichoth/events')
+var namespace = require('@nichoth/events/namespace')
 
-function Roving (props) {
-    return html`<div class="roving">
-        ${props.children}
+var evs = namespace({
+    count: ['inc', 'dec']
+})
+
+var state = struct({
+    count: observ(0)
+})
+
+var bus = Bus({ memo: true })
+var emit = bus.emit.bind(bus)
+
+bus.on(evs.count.inc, () => {
+    state.count.set(state.count() + 1)
+})
+bus.on(evs.count.dec, () => {
+    state.count.set(state.count() - 1)
+})
+
+function App () {
+    var [_state, setState] = useState(state())
+
+    state(function onChange (newState) {
+        setState(newState)
+    })
+
+    return html`<div class="app">
+        <${Counter} ...${_state} emit=${emit} />
     </div>`
 }
 
-router.addRoute('/', function indexRoute (match) {
-    return { view: IndexView }
-})
+function Counter ({ count, emit }) {
+    console.log('state', count)
+    return html`<main>
+        <h1>${count}</h1>
+        <div>
+            <button onClick=${emit(evs.count.inc)}>plus</button>
+            <button onClick=${emit(evs.count.dec)}>minus</button>
+        </div>
+    </main>`
+}
 
-router.addRoute('/*', function ({ splats }) {
-    return { view: IndexView }
-})
-
-route(function onRoute (path) {
-    console.log('path', path)
-    var match = router.match(path)
-    console.log('match', match)
-    var { view } = match.action(match)
-    var { splats } = match
-
-    // every time the route changes, we re-render the view with the
-    // new route params
-
-    var obj = qs.parse(splats[0])
-
-    if (!obj.speed && splats[0]) {
-        // not the slideshow route
-        var index = splats[0]
-        view = SpecificImageView(index)
-    }
-
-    var el = html`<${Roving}>
-        <${view} splats=${match.splats} params=${match.params}
-            speed=${obj.speed}
-        />
-    </${Roving}`
-
-    render(el, document.getElementById('content'))
-})
-
+render(html`<${App} />`, document.getElementById('content'));

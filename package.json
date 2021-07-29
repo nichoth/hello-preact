@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "start": "npm run build && concurrently --kill-others \"npm run serve\" \"npm run watch-sass\"",
+    "start": "npm run build-sass && npm run build && concurrently --kill-others \"npm run serve\" \"npm run watch-sass\"",
     "serve": "budo src/index.js:bundle.js --dir=public/ --live --pushstate --open -- -p esmify -p common-shakeify -dv",
     "build": "npm run build-js && npm run build-sass",
     "build-sass": "sass src/style/main.scss public/style.css",
@@ -22,7 +22,10 @@
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
+    "@nichoth/events": "^1.1.2",
     "htm": "^3.0.4",
+    "observ": "^0.2.0",
+    "observ-struct": "^6.0.0",
     "preact": "^10.5.13",
     "pull-stream": "^3.6.14"
   },
@@ -51,4 +54,3 @@
   },
   "homepage": "https://github.com/nichoth/mars-roving#readme"
 }
-
