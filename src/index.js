@@ -1,40 +1,22 @@
 import { render } from 'preact'
-import { useState } from 'preact/hooks';
 import { html } from 'htm/preact'
 var struct = require('observ-struct')
 var observ = require('observ')
 var Bus = require('@nichoth/events')
-var namespace = require('@nichoth/events/namespace')
+var subscribe = require('./subscribe')
+var evs = require('./EVENTS')
+var connect = require('./connect')
 
-var evs = namespace({
-    count: ['inc', 'dec']
-})
+var bus = Bus({ memo: true })
 
 var state = struct({
     count: observ(0)
 })
 
-var bus = Bus({ memo: true })
-var emit = bus.emit.bind(bus)
+subscribe(bus, state)
 
-bus.on(evs.count.inc, () => {
-    state.count.set(state.count() + 1)
-})
-bus.on(evs.count.dec, () => {
-    state.count.set(state.count() - 1)
-})
-
-function App () {
-    var [_state, setState] = useState(state())
-
-    state(function onChange (newState) {
-        setState(newState)
-    })
-
-    return html`<div class="app">
-        <${Counter} ...${_state} emit=${emit} />
-    </div>`
-}
+render(html`<${connect(Counter, state, bus)} />`,
+    document.getElementById('content'));
 
 function Counter ({ count, emit }) {
     console.log('state', count)
@@ -46,5 +28,3 @@ function Counter ({ count, emit }) {
         </div>
     </main>`
 }
-
-render(html`<${App} />`, document.getElementById('content'));
